@@ -1,0 +1,59 @@
+post:
+  tags:
+    - "Auth"
+  summary: "Login"
+  consumes:
+    - "application/json"
+    - "application/xml"
+  produces:
+    - "application/json"
+    - "application/xml"
+  parameters:
+    - in: "body"
+      name: "data"
+      description: "Login customer"
+      schema:
+        type: "object"
+        properties:
+          email:
+            type: "string"
+            example: "minhtu123@gmail.com"
+          password:
+            type: "string"
+            example: "minhtu123"
+  responses:
+    200:
+      description: "Login successful!"
+      schema:
+        type: "object"
+        properties:
+          access_token: 
+            type: "string"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+          refresh_token: 
+            type: "string"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzZ9.oa76b4sLhNA6YcPamtIaTB1mIEpcapICKXJ48gz00pw"
+          customer:
+            type: "object"
+            properties:
+              first_name:
+                type: "string"
+                example: "Tu"
+              last_name:
+                type: "string"
+                example: "Nguyen"
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              phone_number:
+                type: "string"
+                example: "+84987654321"
+              address:
+                type: "string"
+                example: "Viet Nam"
+    400:
+      description: "Login unsuccessful!"
+    404:
+      description: "User email not found!"
+    500:
+      description: "Sign up fail!"
