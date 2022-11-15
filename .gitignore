@@ -7,3 +7,7 @@ uploads/**/*
 package-lock.json
 source/swaggerUi/swagger-ui-bundle.js
 *.map
+source/swaggerUi/swagger-ui-es-bundle-core.js
+source/swaggerUi/swagger-ui-es-bundle.js
+source/swaggerUi/swagger-ui-standalone-preset.js
+source/swaggerUi/swagger-ui.js
