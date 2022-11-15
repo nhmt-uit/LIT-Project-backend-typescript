@@ -5,3 +5,4 @@ uploads/**/*
 
 .env
 package-lock.json
+source/swaggerUi/swagger-ui-bundle.js
