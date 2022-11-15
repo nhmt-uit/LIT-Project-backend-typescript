@@ -1,0 +1,38 @@
+post:
+  tags:
+    - "Auth"
+  summary: "Refresh Token"
+  consumes:
+    - "application/json"
+    - "application/xml"
+  produces:
+    - "application/json"
+    - "application/xml"
+  parameters:
+    - in: "body"
+      name: "data"
+      description: "Refresh Token customer"
+      schema:
+        type: "object"
+        properties:
+          customer_id:
+            type: "string"
+            example: "614beaf12195da330406b99f"
+          refresh_token:
+            type: "string"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiZWFmMTIxOTVkYTMzMDQwNmI5OWYiLCJpYXQiOjE2MzIzNjcxODV9.6XzQqQHaUuhWW-81oAC1WU6R9dvbnAwyMUeEVR0MMrA"
+  responses:
+    200:
+      description: "Refresh token successful!"
+      schema:
+        type: "object"
+        properties:
+          access_token: 
+            type: "string"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+    401:
+      description: "Not have refresh token"
+    403:
+      description: "Wrong refresh token!"
+    500:
+      description: "Refresh token fail!"

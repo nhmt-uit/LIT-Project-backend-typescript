@@ -1,0 +1,30 @@
+post:
+  tags:
+  - "Customers"
+  summary: "Request verify phone number"
+  consumes:
+  - "application/json"
+  - "application/xml"
+  produces:
+  - "application/json"
+  - "application/xml"
+  parameters:
+  - in: "body"
+    name: "data"
+    description: "Customer request verify their phone number."
+    schema:
+      type: "object"
+      properties:
+        customer_id:
+          type: "ObjectId"
+          example: "6147f53cac72861f04daf420"
+        phone_number:
+          type: "string"
+          example: "+840987654321"
+  responses:
+    200:
+      description: "Check your SMS to verify your phone number!"
+    404:
+      description: "User phone number not found!"
+    500:
+      description: "Request verify phone number fail!"

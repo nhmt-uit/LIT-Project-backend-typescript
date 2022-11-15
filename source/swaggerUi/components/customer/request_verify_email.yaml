@@ -1,0 +1,30 @@
+post:
+  tags:
+  - "Customers"
+  summary: "Request verify email"
+  consumes:
+  - "application/json"
+  - "application/xml"
+  produces:
+  - "application/json"
+  - "application/xml"
+  parameters:
+  - in: "body"
+    name: "data"
+    description: "Customer request verify their email"
+    schema:
+      type: "object"
+      properties:
+        customer_id:
+          type: "ObjectId"
+          example: "6147f53cac72861f04daf420"
+        email:
+          type: "string"
+          example: "minhtu123@gmail.com"
+  responses:
+    200:
+      description: "Check mail to verify your email!"
+    404:
+      description: "User email not found!"
+    500:
+      description: "Request verify email fail!"

@@ -1,0 +1,35 @@
+post:
+  tags:
+  - "Customers"
+  summary: "Verify phone number"
+  consumes:
+  - "application/json"
+  - "application/xml"
+  produces:
+  - "application/json"
+  - "application/xml"
+  parameters:
+  - in: "body"
+    name: "data"
+    description: "Customer receive a code via SMS, they send code back to verify their phone number."
+    schema:
+      type: "object"
+      properties:
+        customer_id:
+          type: "ObjectId"
+          example: "6147f53cac72861f04daf420"
+        phone_number:
+          type: "string"
+          example: "+84987654321"
+        sms_authentication_code:
+          type: "number"
+          example: 945411
+  responses:
+    200:
+      description: "Verify phone number successful!"
+    400:
+      description: "Phone number verification code expired!"
+    404:
+      description: "User phone number not found!"
+    500:
+      description: "Verify phone number fail!"

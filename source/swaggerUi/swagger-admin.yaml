@@ -1,0 +1,1682 @@
+# swagger.yaml
+swagger: "2.0"
+info:
+  description: "Swagger UI - LIT NOW"
+  version: "1.0.0"
+  title: "Admin Swagger"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "contact@gpcoder.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+schemes:
+  - http
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+host: "localhost:8000"
+basePath: "/admin"
+
+#################### ADMIN ####################
+tags:
+  - name: "Admin Auth User"
+    description: "Authentication user"
+  - name: "Admin User"
+    description: "Admin user"
+  - name: "Admin Customer KYC"
+    description: "Admin KYC"
+  - name: "Admin Bank Account"
+    description: "Admin bank account"
+  - name: "Admin Company"
+    description: "Admin company"
+  - name: "Admin Merchant"
+    description: "Admin Merchant"
+  - name: "Admin Category"
+    description: "Admin Category"
+  - name: "Admin Language"
+    description: "Admin Language"
+paths:
+
+  ###### Auth ######
+####### Auth Log In #######
+  /auth/login:
+    post:
+      tags:
+        - "Admin Auth User"
+      summary: "Login"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Login user"
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              password:
+                type: "string"
+                example: "minhtu123"
+      responses:
+        200:
+          description: "Login successful!"
+          schema:
+            type: "object"
+            properties:
+              access_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+              refresh_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzZ9.oa76b4sLhNA6YcPamtIaTB1mIEpcapICKXJ48gz00pw"
+              customer:
+                type: "object"
+                properties:
+                  first_name:
+                    type: "string"
+                    example: "Tu"
+                  last_name:
+                    type: "string"
+                    example: "Nguyen"
+                  email:
+                    type: "string"
+                    example: "minhtu123@gmail.com"
+                  phone_number:
+                    type: "string"
+                    example: "+84987654321"
+                  address:
+                    type: "string"
+                    example: "Viet Nam"
+        400:
+          description: "Login unsuccessful!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Sign up fail!"
+
+  ####### Auth Log Out #######
+  /auth/logout:
+    post:
+      tags:
+        - "Admin Auth User"
+      summary: "Logout"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Logout user"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "614b2d70ab88962df05cd4bd"
+      responses:
+        200:
+          description: "Logout successful!"
+        500:
+          description: "Logout fail!"
+
+  ####### Auth Refresh Token #######
+  /auth/refresh_token:
+    post:
+      tags:
+        - "Admin Auth User"
+      summary: "Refresh Token"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Refresh Token user"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "614beaf12195da330406b99f"
+              refresh_token:
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiZWFmMTIxOTVkYTMzMDQwNmI5OWYiLCJpYXQiOjE2MzIzNjcxODV9.6XzQqQHaUuhWW-81oAC1WU6R9dvbnAwyMUeEVR0MMrA"
+      responses:
+        200:
+          description: "Refresh token successful!"
+          schema:
+            type: "object"
+            properties:
+              access_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+        401:
+          description: "Not have refresh token"
+        403:
+          description: "Wrong refresh token!"
+        500:
+          description: "Refresh token fail!"
+
+####### Admin User #######
+####### Create User #######
+  /user/create_user:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin User"
+      summary: "Create User"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Create new user"
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "Minh Tu"
+              email:
+                type: "string"
+                example: "nhmtu1997@gmail.com"
+              password:
+                type: "string"
+                example: "Tucuteno1"
+              role:
+                type: "string"
+                example: "Admin"
+      responses:
+        200:
+          description: "Create user successful!"
+        500:
+          description: "Create user fail!"
+
+####### Get Users #######
+  /user/get_users:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin User"
+      summary: "Get Users"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: user_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get users successful!"
+        500:
+          description: "Get users fail!"
+
+####### Change Password User #######
+  /user/change_password:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin User"
+      summary: "Change Password"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Change password user"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "61724d442557223b5c2dbecd"
+              password:
+                type: "string"
+                example: "Tucuteno1"
+              new_password:
+                type: "string"
+                example: "Tucuteno2"
+      responses:
+        200:
+          description: "Change password successful!"
+        500:
+          description: "Change password fail!"
+
+####### Update User #######
+  /user/update_user:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin User"
+      summary: "Update user"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update user"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "61724d442557223b5c2dbecd"
+              name:
+                type: "string"
+                example: "NHMT"
+              email:
+                type: "string"
+                example: "tu.nhm1997@gmail.com"
+              password:
+                type: "string"
+                example: "Tucuteno2"
+              role:
+                type: "string"
+                example: "Admin"
+      responses:
+        200:
+          description: "Change password successful!"
+        500:
+          description: "Change password fail!"
+
+####### Delete User #######
+  /user/delete_user:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin User"
+      summary: "Delete user"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete user"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "61724d442557223b5c2dbecd"
+      responses:
+        200:
+          description: "Delete user successful!"
+        500:
+          description: "Delete user fail!"
+
+####### Admin Customer KYC #######
+####### Get All Images KYC #######
+  /customer_kyc/get_all_images_kyc:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Customer KYC"
+      summary: "Get all images KYC"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: customer_id
+          schema:
+            type: string
+        - in: query
+          name: user_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get images successful!"
+        500:
+          description: "Get images fail!"
+####### Confirm Customer KYC images #######
+  /customer_kyc/confirm_customer_kyc:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Customer KYC"
+      summary: "Confirm customer KYC images"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Admin confirm customer KYC images."
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "boolean"
+                example: true
+      responses:
+        200:
+          description: "Confirm customer KYC successful!"
+        400:
+          description: "Confirm customer KYC fail!"
+
+####### Bank Account #######
+####### Get duplicate Bank Accounts #######
+  /bank_account/get_duplicate_bank_account:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Bank Account"
+      summary: "Get duplicate Bank Account"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Get duplicate bank account successful!"
+        500:
+          description: "Get duplicate bank account fail!"
+
+####### Admin Company #######
+####### Create Company #######
+  /company/create_company:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Company"
+      summary: "Create Company"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: name
+          type: string
+          description: A Company's name.
+        - in: formData
+          name: avatar
+          type: file
+          description: Company's avatar
+      responses:
+        200:
+          description: "Create company successful!"
+        500:
+          description: "Create company fail!"
+
+####### Update Company #######
+  /company/update_company:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Company"
+      summary: "Update Company"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update Company"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "616160feb26bc92920cd2afc"
+              name:
+                type: "string"
+                example: "CTY TNHH Minh Tu"
+      responses:
+        200:
+          description: "Update company successful!"
+        500:
+          description: "Update company fail!"
+
+####### Update Company Avatar #######
+  /company/update_company_avatar:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Company"
+      summary: "Update Company"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: A Company's id.
+        - in: formData
+          name: avatar
+          type: file
+          description: Company's avatar
+      responses:
+        200:
+          description: "Update company successful!"
+        500:
+          description: "Update company fail!"
+
+####### Get Companies #######
+  /company/get_companies:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Company"
+      summary: "Get Companies"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get companies successful!"
+        500:
+          description: "Get companies fail!"
+
+####### Delete Company #######
+  /company/delete_company:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Company"
+      summary: "Delete Company"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete Company"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "616160feb26bc92920cd2afc"
+      responses:
+        200:
+          description: "Delete company successful!"
+        500:
+          description: "Delete company fail!"
+
+####### Merchant #######
+####### Create merchant #######
+  /merchant/create_merchant:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Create merchant"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: avatar
+          type: file
+          description: Company's avatar
+        - in: formData
+          name: banner
+          type: file
+          description: Company's banner
+        - in: formData
+          name: name
+          type: string
+          description: A Merchant's name.
+        - in: formData
+          name: address_1
+          type: string
+          description: Merchant address
+        - in: formData
+          name: address_2
+          type: string
+          description: Merchant address
+        - in: formData
+          name: address_3
+          type: string
+          description: Merchant address
+        - in: formData
+          name: district
+          type: string
+          description: Merchant district
+        - in: formData
+          name: city
+          type: string
+          description: Merchant city
+        - in: formData
+          name: email
+          type: string
+          description: Merchant's email
+        - in: formData
+          name: website
+          type: string
+          description: Merchant's website
+        - in: formData
+          name: company_id
+          type: string
+          description: Company's id
+        - in: formData
+          name: type
+          type: string
+          description: Merchant's type
+      responses:
+        200:
+          description: "Create merchant successful!"
+        401:
+          description: "Merchant name has been used!"
+####### Get merchants #######
+  /merchant/get_merchants:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Get merchants"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get merchants successful!"
+        401:
+          description: "Not found any merchants!"
+
+####### Update merchant #######
+  /merchant/update_merchant:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Update merchant"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update merchant"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+              name:
+                type: "string"
+                example: "Nhà kho Liti"
+              address_1:
+                type: "string"
+                example: "4 Hoàng Văn Thụ, Tân Bình"
+              address_2:
+                type: "string"
+                example: ""
+              address_3:
+                type: "string"
+                example: ""
+              district:
+                type: "string"
+                example: "Tân Bình"
+              city:
+                type: "string"
+                example: "Hồ Chí Minh"
+              email:
+                type: "string"
+                example: "nhakholiti@gmail.com"
+              company_id:
+                type: "string"
+                example: "6163af2b7202b046c88c0cb5"
+              type:
+                type: "string"
+                example: "Online"
+      responses:
+        200:
+          description: "Update merchant successful!"
+        401:
+          description: "Merchant name has been used!"
+
+####### Update Merchant Avatar #######
+  /merchant/update_merchant_avatar:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Update Merchant Avatar"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: A Merchant's id.
+        - in: formData
+          name: avatar
+          type: file
+          description: Merchant's avatar
+      responses:
+        200:
+          description: "Update merchant successful!"
+        500:
+          description: "Update merchant fail!"
+
+####### Update Merchant Banner #######
+  /merchant/update_merchant_banner:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Update Merchant Banner"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: A Merchant's id.
+        - in: formData
+          name: banner
+          type: file
+          description: Merchant's banner
+      responses:
+        200:
+          description: "Update merchant successful!"
+        500:
+          description: "Update merchant fail!"
+
+####### Delete merchant #######
+  /merchant/delete_merchant:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Merchant"
+      summary: "Delete merchant"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete merchant"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+      responses:
+        200:
+          description: "Delete merchant successful!"
+        500:
+          description: "Delete merchant fail!"
+
+####### Category #######
+####### Create Category #######
+  /category/create_category:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Category"
+      summary: "Create category"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Create category"
+          schema:
+            type: "object"
+            properties:
+              en_name:
+                type: "string"
+                example: "Health"
+              vn_name:
+                type: "string"
+                example: "Sức khỏe"
+              parent_id:
+                type: "string"
+                example: "6166436e5f855a05c085500d"
+              priority:
+                type: "number"
+                example: 0
+      responses:
+        200:
+          description: "Create category successful!"
+        401:
+          description: "Category name has been used!"
+        500:
+          description: "Create category fail!"
+
+####### Create Category #######
+  /category/get_categories:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Category"
+      summary: "Get categories"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Get categories"
+          schema:
+            type: "object"
+            properties:
+      responses:
+        200:
+          description: "Get categories successful!"
+        500:
+          description: "Get categories fail!"
+
+####### Update Category #######
+  /category/update_category:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Category"
+      summary: "Update category"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update category"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: ""
+              en_name:
+                type: "string"
+                example: "Health"
+              vn_name:
+                type: "string"
+                example: "Sức khỏe"
+              parent_id:
+                type: "string"
+                example: "6166436e5f855a05c085500d"
+              priority:
+                type: "number"
+                example: 0
+      responses:
+        200:
+          description: "Update category successful!"
+        401:
+          description: "Category name has been used!"
+        500:
+          description: "Update category fail!"
+
+####### Delete Category #######
+  /category/delete_category:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Category"
+      summary: "Delete category"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete category"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: ""
+      responses:
+        200:
+          description: "Delete category successful!"
+        500:
+          description: "Delete category fail!"
+
+####### Brand #######
+####### Create brand #######
+  /brand/create_brand:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Brand"
+      summary: "Create brand"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: avatar
+          type: file
+          description: Brand's avatar
+        - in: formData
+          name: name
+          type: string
+          description: A Brand's name.
+        - in: formData
+          name: company_id
+          type: string
+          description: Company's id
+      responses:
+        200:
+          description: "Create brand successful!"
+        401:
+          description: "Brand name has been used!"
+####### Get brands #######
+  /brand/get_brands:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Brand"
+      summary: "Get brands"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get brands successful!"
+        401:
+          description: "Not found any brands!"
+
+####### Update brand #######
+  /brand/update_brand:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Brand"
+      summary: "Update brand"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update brand"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+              name:
+                type: "string"
+                example: "Nhà kho Liti"
+      responses:
+        200:
+          description: "Update brand successful!"
+        401:
+          description: "Brand name has been used!"
+
+####### Update Brand Avatar #######
+  /brand/update_brand_avatar:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Brand"
+      summary: "Update Brand Avatar"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: A Brand's id.
+        - in: formData
+          name: avatar
+          type: file
+          description: Brand's avatar
+      responses:
+        200:
+          description: "Update brand successful!"
+        500:
+          description: "Update brand fail!"
+
+####### Delete Brand #######
+  /brand/delete_brand:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Brand"
+      summary: "Delete brand"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete Brand"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+      responses:
+        200:
+          description: "Delete brand successful!"
+        500:
+          description: "Delete brand fail!"
+
+####### Event #######
+####### Create event #######
+  /event/create_event:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Create Event"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: image
+          type: file
+          description: Event's image
+        - in: formData
+          name: event_name
+          type: string
+          description: A event's name.
+          example: 'Sự kiện tháng 10'
+        - in: formData
+          name: start_date
+          type: string
+          description: Event's start date.
+          example: '16/10/2021'
+        - in: formData
+          name: finish_date
+          type: string
+          description: Event's finish date.
+          example: '22/10/2021'
+        - in: formData
+          name: html_content
+          type: string
+          description: HTML event content.
+          example: '
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khuyến mãi tháng 11</title>
+</head>
+<body>
+    Đây là trang khuyến mãi tháng 11.
+</body>
+</html>
+          '
+        - in: formData
+          name: merchant_id
+          type: string
+          description: Merchant's id.
+      responses:
+        200:
+          description: "Create event successful!"
+        401:
+          description: "Event name has been used!"
+
+####### Get events #######
+  /event/get_events:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Get events"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get events successful!"
+        401:
+          description: "Not found any events!"
+
+####### Update Event #######
+  /event/update_event:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Update Event"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: Event's id
+        - in: formData
+          name: image
+          type: file
+          description: Event's image
+        - in: formData
+          name: event_name
+          type: string
+          description: A event's name.
+          example: 'Sự kiện tháng 11'
+        - in: formData
+          name: start_date
+          type: string
+          description: Event's start date.
+          example: '20/11/2021'
+        - in: formData
+          name: finish_date
+          type: string
+          description: Event's finish date.
+          example: '25/11/2021'
+        - in: formData
+          name: html_content
+          type: string
+          description: HTML event content.
+          example: '
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khuyến mãi tháng 11</title>
+</head>
+<body>
+    Đây là trang khuyến mãi tháng 11.
+</body>
+</html>
+          '
+        - in: formData
+          name: merchant_id
+          type: string
+          description: Merchant's id.
+      responses:
+        200:
+          description: "Update event successful!"
+        401:
+          description: "Event name has been used!"
+
+####### Delete Event #######
+  /event/delete_event:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Delete Event"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete Event"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+      responses:
+        200:
+          description: "Delete event successful!"
+        500:
+          description: "Delete event fail!"
+
+####### Get Event By Approved #######
+  /event/get_events_by_approved:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Get Event By Approved"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: approved
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: "Get events by approved successful!"
+        500:
+          description: "Get events by approved fail!"
+
+####### Approve Event #######
+  /event/approve_event:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Event"
+      summary: "Approve Event"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Approve Event"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+              approved:
+                type: "boolean"
+                example: true
+      responses:
+        200:
+          description: "Approve Event successful!"
+        500:
+          description: "Approve Event fail!"
+
+####### Product #######
+####### Create Product #######
+  /product/create_product:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Product"
+      summary: "Create Product"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: image_0
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_1
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_2
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_3
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_4
+          type: file
+          description: Product's image
+        - in: formData
+          name: name
+          type: string
+          description: A Product's name.
+          example: 'Bột ngũ cốc'
+        - in: formData
+          name: description
+          type: string
+          description: A Product's description.
+          example: 'Bột ngũ cốc tăng cân'
+        - in: formData
+          name: merchant_id
+          type: string
+          description: Merchant's id.
+        - in: formData
+          name: brand_id
+          type: string
+          description: Brand's id.
+        - in: formData
+          name: Category_id
+          type: string
+          description: Category's id.
+      responses:
+        200:
+          description: "Create product successful!"
+        401:
+          description: "Product name has been used!"
+
+####### Get products #######
+  /product/get_products:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Product"
+      summary: "Get Products"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+        - in: query
+          name: user_id
+          schema:
+            type: string
+        - in: query
+          name: brand_id
+          schema:
+            type: string
+        - in: query
+          name: category_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get products successful!"
+        401:
+          description: "Not found any products!"
+
+####### Update Product #######
+  /product/update_product:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Product"
+      summary: "Update Product"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: formData
+          name: id
+          type: string
+          description: Product's id
+        - in: formData
+          name: image_0
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_1
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_2
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_3
+          type: file
+          description: Product's image
+        - in: formData
+          name: image_4
+          type: file
+          description: Product's image
+        - in: formData
+          name: name
+          type: string
+          description: A Product's name.
+          example: 'Bột ngũ cốc'
+        - in: formData
+          name: description
+          type: string
+          description: A Product's description.
+          example: 'Bột ngũ cốc tăng cân'
+        - in: formData
+          name: merchant_id
+          type: string
+          description: Merchant's id.
+        - in: formData
+          name: brand_id
+          type: string
+          description: Brand's id.
+        - in: formData
+          name: Category_id
+          type: string
+          description: Category's id.
+      responses:
+        200:
+          description: "Update product successful!"
+        401:
+          description: "Product name has been used!"
+
+####### Delete Product #######
+  /product/delete_product:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Product"
+      summary: "Delete Product"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete Product"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "6163ece8cfc2702fdc6e40f8"
+      responses:
+        200:
+          description: "Delete product successful!"
+        500:
+          description: "Delete product fail!"
+
+####### Language #######
+####### Create Language #######
+  /language/create_language:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Language"
+      summary: "Create Language"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Create Language"
+          schema:
+            type: "object"
+            properties:
+              key:
+                type: "string"
+                example: "save"
+              vietnamese:
+                type: "string"
+                example: "Lưu"
+              english:
+                type: "string"
+                example: "Save"
+              chinese:
+                type: "string"
+                example: "节省"
+      responses:
+        200:
+          description: "Create language successful!"
+        401:
+          description: "Key language is already in use!"
+        500:
+          description: "Create language fail!"
+
+####### Get Language #######
+  /language/get_languages:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Language"
+      summary: "Get Languages"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get languages successful!"
+        500:
+          description: "Get languages fail!"
+
+####### Update Language #######
+  /language/update_language:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Language"
+      summary: "Update Language"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Update Language"
+          schema:
+            type: "object"
+            properties:
+              id: 
+                type: "string"
+                example: ""
+              key:
+                type: "string"
+                example: "save"
+              vietnamese:
+                type: "string"
+                example: "Lưu"
+              english:
+                type: "string"
+                example: "Save"
+              chinese:
+                type: "string"
+                example: "节省"
+      responses:
+        200:
+          description: "Update language successful!"
+        400:
+          description: "Key language is already in use!"
+        500:
+          description: "Update language fail!"
+
+####### Delete Language #######
+  /language/delete_language:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Language"
+      summary: "Delete Language"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete Language"
+          schema:
+            type: "object"
+            properties:
+              id: 
+                type: "string"
+                example: ""
+      responses:
+        200:
+          description: "Delete language successful!"
+        500:
+          description: "Create language fail!"

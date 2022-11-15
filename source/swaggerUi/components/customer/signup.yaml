@@ -1,0 +1,63 @@
+post:
+  tags:
+  - "Customers"
+  summary: "Add new customer"
+  consumes:
+  - "application/json"
+  - "application/xml"
+  produces:
+  - "application/json"
+  - "application/xml"
+  parameters:
+  - in: "body"
+    name: "data"
+    description: "New customer info"
+    schema:
+      type: "object"
+      properties:
+        first_name:
+          type: "string"
+          example: "Tu"
+        last_name:
+          type: "string"
+          example: "Nguyen"
+        email:
+          type: "string"
+          example: "minhtu123@gmail.com"
+        password:
+          type: "string"
+          example: "minhtu123"
+        phone_number:
+          type: "string"
+          example: "+84987654321"
+        address:
+          type: "string"
+          example: "Viet Nam"
+  responses:
+    201:
+      description: "Sign up successful!"
+      schema:
+        type: "object"
+        properties:
+          first_name:
+            type: "string"
+            example: "Tu"
+          last_name:
+            type: "string"
+            example: "Nguyen"
+          email:
+            type: "string"
+            example: "minhtu123@gmail.com"
+          password:
+            type: "string"
+            example: "minhtu123"
+          phone_number:
+            type: "string"
+            example: "+84966666712"
+          address:
+            type: "string"
+            example: "Viet Nam"
+    401:
+      description: "Email or phone number has been used"
+    500:
+      description: "Sign up fail!"

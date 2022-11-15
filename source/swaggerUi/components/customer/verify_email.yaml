@@ -1,0 +1,35 @@
+post:
+  tags:
+  - "Customers"
+  summary: "Verify email"
+  consumes:
+  - "application/json"
+  - "application/xml"
+  produces:
+  - "application/json"
+  - "application/xml"
+  parameters:
+  - in: "body"
+    name: "data"
+    description: "Customer click link was sent to their mail to verify their email"
+    schema:
+      type: "object"
+      properties:
+        customer_id:
+          type: "ObjectId"
+          example: "6147f53cac72861f04daf420"
+        email:
+          type: "string"
+          example: "minhtu123@gmail.com"
+        email_authentication_token:
+          type: "string"
+          example: "7a59f360-186d-11ec-9ba1-095e3e8b2b96"
+  responses:
+    200:
+      description: "Verify email successful!"
+    400:
+      description: "Email verification link expired!"
+    404:
+      description: "User email not found!"
+    500:
+      description: "Verify email fail!"

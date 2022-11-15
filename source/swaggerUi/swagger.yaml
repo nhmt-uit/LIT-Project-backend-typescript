@@ -1,0 +1,1091 @@
+# swagger.yaml
+swagger: "2.0"
+info:
+  description: "Swagger UI - LIT NOW"
+  version: "1.0.0"
+  title: "Swagger UI Demo"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "contact@gpcoder.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+schemes:
+  - http
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+host: "localhost:8000"
+basePath: "/api"
+
+#################### TAGs ####################
+tags:
+  - name: "Auth"
+    description: "Auth account customer"
+  - name: "Customers"
+    description: "Everything about customer"
+  - name: "Customer KYC"
+    description: "API KYC customer"
+  - name: "Bank Account"
+    description: "Customer's bank accounts"
+  - name: "Merchant"
+    description: "Merchant"
+  - name: "Company"
+    description: "Company"
+  - name: "Brand"
+    description: "Brand"
+  - name: "Event"
+    description: "Event"
+paths:
+
+  ####### Auth Log In #######
+  /auth/login:
+    # $ref: ./auth/customer/login.yaml
+    post:
+      tags:
+        - "Auth"
+      summary: "Login"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Login customer"
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              password:
+                type: "string"
+                example: "minhtu123"
+      responses:
+        200:
+          description: "Login successful!"
+          schema:
+            type: "object"
+            properties:
+              access_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+              refresh_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzZ9.oa76b4sLhNA6YcPamtIaTB1mIEpcapICKXJ48gz00pw"
+              customer:
+                type: "object"
+                properties:
+                  first_name:
+                    type: "string"
+                    example: "Tu"
+                  last_name:
+                    type: "string"
+                    example: "Nguyen"
+                  email:
+                    type: "string"
+                    example: "minhtu123@gmail.com"
+                  phone_number:
+                    type: "string"
+                    example: "+84987654321"
+                  address:
+                    type: "string"
+                    example: "Viet Nam"
+        400:
+          description: "Login unsuccessful!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Sign up fail!"
+
+  ####### Auth Log Out #######
+  /auth/logout:
+    # $ref: ./components/auth/logout.yaml
+    post:
+      tags:
+        - "Auth"
+      summary: "Logout"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Logout customer"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "614b2d70ab88962df05cd4bd"
+      responses:
+        200:
+          description: "Logout successful!"
+        500:
+          description: "Logout fail!"
+
+  ####### Auth Refresh Token #######
+  /auth/refresh_token:
+    # $ref: ./components/auth/refresh_token.yaml
+    post:
+      tags:
+        - "Auth"
+      summary: "Refresh Token"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Refresh Token customer"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "614beaf12195da330406b99f"
+              refresh_token:
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiZWFmMTIxOTVkYTMzMDQwNmI5OWYiLCJpYXQiOjE2MzIzNjcxODV9.6XzQqQHaUuhWW-81oAC1WU6R9dvbnAwyMUeEVR0MMrA"
+      responses:
+        200:
+          description: "Refresh token successful!"
+          schema:
+            type: "object"
+            properties:
+              access_token: 
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTRiMmQ3MGFiODg5NjJkZjA1Y2Q0YmQiLCJpYXQiOjE2MzIzNjM1MzYsImV4cCI6MTYzMjM2MzU2Nn0.vYtNtF8--YPZWf5DpHiF2oRWlGM5n5Z-k0zDjKMZhQI"
+        401:
+          description: "Not have refresh token"
+        403:
+          description: "Wrong refresh token!"
+        500:
+          description: "Refresh token fail!"
+
+  ####### Customer Sign Up #######
+  /customer/signup:
+    # $ref: ./components/customer/signup.yaml
+    post:
+      tags:
+        - "Customers"
+      summary: "Add new customer"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "New customer info"
+          schema:
+            type: "object"
+            properties:
+              first_name:
+                type: "string"
+                example: "Tu"
+              last_name:
+                type: "string"
+                example: "Nguyen"
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              password:
+                type: "string"
+                example: "minhtu123"
+              phone_number:
+                type: "string"
+                example: "+84987654321"
+              address:
+                type: "string"
+                example: "Viet Nam"
+      responses:
+        201:
+          description: "Sign up successful!"
+          schema:
+            type: "object"
+            properties:
+              first_name:
+                type: "string"
+                example: "Tu"
+              last_name:
+                type: "string"
+                example: "Nguyen"
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              password:
+                type: "string"
+                example: "minhtu123"
+              phone_number:
+                type: "string"
+                example: "+84966666712"
+              address:
+                type: "string"
+                example: "Viet Nam"
+        401:
+          description: "Email or phone number has been used"
+        500:
+          description: "Sign up fail!"
+
+  ####### Customer Change Password #######
+  /customer/change_password:
+    # $ref: components/customer/change_password.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Change password"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer want to change their password"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "61487b1263647425003d0b90"
+              password:
+                type: "string"
+                example: "minhtu123"
+              new_password:
+                type: "string"
+                example: "minhtu098"
+      responses:
+        200:
+          description: "Change password successful!"
+        400:
+          description: "Enter wrong password!"
+        404:
+          description: "User not found!"
+        500:
+          description: "Request change password fail!"
+
+  ####### Customer Forgot Password #######
+  /customer/forgot_password:
+    # $ref: components/customer/forgot_password.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Forgot password"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer forgot their password and they want to take it back"
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+      responses:
+        200:
+          description: "Check mail to see reset password link!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Request reset password fail!"
+
+  ####### Customer Reset Password #######
+  /customer/reset_password:
+    # $ref: components/customer/reset_password.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Reset password"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer submit new password to reset!"
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              new_password:
+                type: "string"
+                example: "minhtu123"
+              reset_password_token:
+                type: "string"
+                example: "fa0b97b0-1865-11ec-b2e6-4b0c6dd9393c"
+      responses:
+        200:
+          description: "Reset password successful!"
+        400:
+          description: "Password reset link expired!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Reset password fail!"
+
+  ####### Customer Request Verify Email #######
+  /customer/request_verify_email:
+    # $ref: components/customer/request_verify_email.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Request verify email"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer request verify their email"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "6147f53cac72861f04daf420"
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+      responses:
+        200:
+          description: "Check mail to verify your email!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Request verify email fail!"
+
+  ####### Customer Verify Email #######
+  /customer/verify_email:
+    # $ref: components/customer/verify_email.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Verify email"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer click link was sent to their mail to verify their email"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "6147f53cac72861f04daf420"
+              email:
+                type: "string"
+                example: "minhtu123@gmail.com"
+              email_authentication_token:
+                type: "string"
+                example: "7a59f360-186d-11ec-9ba1-095e3e8b2b96"
+      responses:
+        200:
+          description: "Verify email successful!"
+        400:
+          description: "Email verification link expired!"
+        404:
+          description: "User email not found!"
+        500:
+          description: "Verify email fail!"
+
+  ####### Customer Request Verify Phone Number #######
+  /customer/request_verify_phone_number:
+    # $ref: components/customer/request_verify_phone_number.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Request verify phone number"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer request verify their phone number."
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "6147f53cac72861f04daf420"
+              phone_number:
+                type: "string"
+                example: "+840987654321"
+      responses:
+        200:
+          description: "Check your SMS to verify your phone number!"
+        404:
+          description: "User phone number not found!"
+        500:
+          description: "Request verify phone number fail!"
+
+  ####### Customer Verify Phone Number #######
+  /customer/verify_phone_number:
+    # $ref: components/customer/verify_phone_number.yaml
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customers"
+      summary: "Verify phone number"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer receive a code via SMS, they send code back to verify their phone number."
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "6147f53cac72861f04daf420"
+              phone_number:
+                type: "string"
+                example: "+84987654321"
+              sms_authentication_code:
+                type: "number"
+                example: 945411
+      responses:
+        200:
+          description: "Verify phone number successful!"
+        400:
+          description: "Phone number verification code expired!"
+        404:
+          description: "User phone number not found!"
+        500:
+          description: "Verify phone number fail!"
+
+####### KYC Upload Portrait #######
+  /customer_kyc/upload_portrait:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Upload Portrait"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: image
+          in: formData
+          description: The uploaded file data
+          required: true
+          type: file
+      responses:
+        200:
+          description: "Upload image successful!"
+        500:
+          description: "Upload image fail!"
+
+####### KYC Get Portrait #######
+  /customer_kyc/get_portrait:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Get Portrait"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Get image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### KYC Delete Portrait #######
+  /customer_kyc/delete_portrait:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Delete Portrait"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Delete image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### KYC Upload Portrait #######
+  /customer_kyc/upload_front_side_id_card:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Upload Frond Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: image
+          in: formData
+          description: The uploaded file data
+          required: true
+          type: file
+      responses:
+        200:
+          description: "Upload image successful!"
+        500:
+          description: "Upload image fail!"
+
+####### KYC Get Portrait #######
+  /customer_kyc/get_front_side_id_card:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Get Front Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Get image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### KYC Delete Portrait #######
+  /customer_kyc/delete_front_side_id_card:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Delete Front Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Delete image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### KYC Upload Portrait #######
+  /customer_kyc/upload_back_side_id_card:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Upload Back Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - name: image
+          in: formData
+          description: The uploaded file data
+          required: true
+          type: file
+      responses:
+        200:
+          description: "Upload image successful!"
+        500:
+          description: "Upload image fail!"
+
+####### KYC Get Portrait #######
+  /customer_kyc/get_back_side_id_card:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Get Back Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Get image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### KYC Delete Portrait #######
+  /customer_kyc/delete_back_side_id_card:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Delete Back Side ID Card"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Delete image successful!"
+        400: 
+          description: "Not found image"
+        404:
+          description: "Not found customer's portrait"
+        500:
+          description: "Get image fail!"
+
+####### Get All Images KYC #######
+  /customer_kyc/get_all_images_kyc:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Customer KYC"
+      summary: "Get all images KYC"
+      consumes:
+        - multipart/form-data
+      produces:
+        - "application/json"
+        - "application/xml"
+      responses:
+        200:
+          description: "Get images successful!"
+        500:
+          description: "Get images fail!"
+
+####### Bank Account #######
+####### Create Bank Account #######
+  /bank_account/create_bank_account:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Bank Account"
+      summary: "Create Bank Account"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer add their bank account info"
+          schema:
+            type: "object"
+            properties:
+              customer_id:
+                type: "string"
+                example: "614b2d70ab88962df05cd4bd"
+              nickname:
+                type: "string"
+                example: "Đây là tài khoản của tui"
+              account_holder_name:
+                type: "string"
+                example: "NGUYEN HOANG MINH TU"
+              account_number:
+                type: "string"
+                example: "02325754101"
+              bank_name:
+                type: "string"
+                example: "TP Bank"
+              bank_branch:
+                type: "string"
+                example: "Cộng Hòa"
+      responses:
+        200:
+          description: "Successfully added bank account!"
+        400:
+          description: "This bank account is already in use!"
+        500:
+          description: "Create bank account fail!"
+
+####### Update Bank Account #######
+  /bank_account/update_bank_account:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Bank Account"
+      summary: "Update Bank Account"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Customer update their bank account info"
+          schema:
+            type: "object"
+            properties:
+              id: 
+                type: "string"
+                example: "615561bf4ac70329c09184a6"
+              customer_id:
+                type: "string"
+                example: "614b2d70ab88962df05cd4bd"
+              nickname:
+                type: "string"
+                example: "That's mine!"
+              account_holder_name:
+                type: "string"
+                example: "NGUYEN HOANG MINH TU"
+              account_number:
+                type: "string"
+                example: "02325754101"
+              bank_name:
+                type: "string"
+                example: "TP Bank"
+              bank_branch:
+                type: "string"
+                example: "Cộng Hòa"
+      responses:
+        200:
+          description: "Update bank account successful"
+        400:
+          description: "This bank account is already in use!"
+        500:
+          description: "Update bank account fail!"
+
+####### Get Bank Accounts #######
+  /bank_account/get_bank_accounts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Bank Account"
+      summary: "Get Bank Account"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: customer_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get bank account info successful!"
+        404:
+          description: "This customer's bank account could not be found!"
+        500:
+          description: "Get customer's bank accounts fail!"
+
+####### Delete Bank Accounts #######
+  /bank_account/delete_bank_account:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "Bank Account"
+      summary: "Delete Bank Account"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: "body"
+          name: "data"
+          description: "Delete customer's bank account"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "61555ce93af5cb3df4cbbafc"
+      responses:
+        200:
+          description: "Delete bank account successful!"
+        500:
+          description: "Delete customer's bank account fail!"
+
+####### Merchant #######
+####### Get merchants #######
+  /merchant/get_merchants:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Merchant"
+      summary: "Get merchants"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get merchants successful!"
+        401:
+          description: "Not found any merchants!"
+
+####### Get merchants Slider #######
+  /merchant/get_merchants_slider:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Merchant"
+      summary: "Get Merchants Slider"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get merchants successful!"
+        401:
+          description: "Not found any merchants!"
+
+####### Company #######
+####### Get companys #######
+  /company/get_companies:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Company"
+      summary: "Get companies"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get companies successful!"
+        401:
+          description: "Not found any companies!"
+
+####### Brand #######
+####### Get brands #######
+  /brand/get_brands:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Brand"
+      summary: "Get brands"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get brands successful!"
+        401:
+          description: "Not found any brands!"
+
+####### Event #######
+####### Get events #######
+  /event/get_events:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Event"
+      summary: "Get events"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: event_name
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get events successful!"
+        401:
+          description: "Not found any events!"
+
+####### Product #######
+####### Get products #######
+  /product/get_products:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Product"
+      summary: "Get Products"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: brand_id
+          schema:
+            type: string
+        - in: query
+          name: category_id
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get products successful!"
+        401:
+          description: "Not found any products!"
+
+####### Language #######
+####### Get Language #######
+  /language/get_languages:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "Admin Language"
+      summary: "Get Languages"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/json"
+        - "application/xml"
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Get languages successful!"
+        500:
+          description: "Get languages fail!"
